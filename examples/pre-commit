@@ -1,0 +1,5 @@
+#!/bin/sh
+# Check the working copy. The exit code is the check's exit code.
+root=$(git rev-parse --show-toplevel) || exit 1
+cd "$root" || exit 1
+python3 render.py --check

@@ -1,0 +1,29 @@
+{
+  "org": "Example Co",
+  "people": ["Ada", "Ben", "Cy"],
+  "teams": [
+    {
+      "name": "Build",
+      "head": "Ada",
+      "measured_by": "working software a customer used this month",
+      "owns": ["the mobile app", "the release checklist"]
+    },
+    {
+      "name": "Sell",
+      "head": "Ben",
+      "measured_by": "new customers who signed",
+      "owns": ["the price list", "the proposal template"]
+    },
+    {
+      "name": "Run",
+      "head": "Cy",
+      "measured_by": "backups that were restored in a drill",
+      "owns": ["the nightly backup", "the status page"]
+    }
+  ],
+  "outputs": [
+    {"view": "roster", "file": "ROSTER.md"},
+    {"view": "owners", "file": "OWNERS.md"},
+    {"view": "roster", "file": "README.md", "block": "roster"}
+  ]
+}

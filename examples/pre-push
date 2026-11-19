@@ -1,0 +1,41 @@
+#!/bin/sh
+# Check each commit being pushed, not the working copy.
+# A fixed working copy can hide a bad commit, and an unfinished edit can block a good one.
+set -eu
+dir=""
+cleanup() {
+  if [ -n "$dir" ]; then
+    rm -rf "$dir"
+  fi
+}
+trap cleanup EXIT
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ -z "${local_ref:-}" ]; then
+    continue
+  fi
+  case "$local_ref" in
+    refs/heads/*) ;;
+    *) continue ;;
+  esac
+  case "$local_sha" in
+    *[!0]*) ;;
+    *) continue ;;
+  esac
+  dir=$(mktemp -d)
+  archive="$dir/archive.tar"
+  git archive "$local_sha" > "$archive"
+  tar -xf "$archive" -C "$dir"
+  rm -f "$archive"
+  if python3 "$dir/render.py" --check --root "$dir"; then
+    rm -rf "$dir"
+    dir=""
+  else
+    printf '%s\n' "refusing $local_ref"
+    exit 1
+  fi
+done
+exit 0
